@@ -9,10 +9,10 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace WindowsFormsPropelledArtillery
-{    
+{
     public partial class FormArtillery : Form
     {
-        private SelfPropelledArtillery artillery;
+        private ITransport combatVehicle;
         /// <summary>
         /// Конструктор
         /// </summary>
@@ -21,27 +21,40 @@ namespace WindowsFormsPropelledArtillery
             InitializeComponent();
         }
         /// <summary>
-        /// Метод отрисовки самоходной артиллерийской установки
+        /// Метод отрисовки боевой машины
         /// </summary>
         private void Draw()
         {
             Bitmap bmp = new Bitmap(pictureBoxArtillery.Width, pictureBoxArtillery.Height);
             Graphics gr = Graphics.FromImage(bmp);
-            artillery.DrawTransport(gr);
+            combatVehicle.DrawTransport(gr);
             pictureBoxArtillery.Image = bmp;
         }
         /// <summary>
-        /// Обработка нажатия кнопки "Создать"
+        /// Обработка нажатия кнопки "Создать боевую машину"
+        /// </summary>
+        /// <param name="sender"></param>
+        /// /// <param name="e"></param>
+        private void buttonCreateCombatVehicle_Click(object sender, EventArgs e)
+        {
+            Random rnd = new Random();
+            combatVehicle = new CombatVehicle(rnd.Next(100, 300), rnd.Next(1000, 2000), Color.Green);
+            combatVehicle.SetPosition(rnd.Next(10, 100), rnd.Next(10, 100), pictureBoxArtillery.Width,
+            pictureBoxArtillery.Height);
+            Draw();
+        }
+        /// <summary>
+        /// Обработка нажатия кнопки "Создать самоходную артилерийскую установку"
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void buttonCreate_Click(object sender, EventArgs e)
+        private void buttonCreateSelfPropelledArtillery_Click(object sender, EventArgs e)
         {
             Random rnd = new Random();
-            artillery = new SelfPropelledArtillery();
-            artillery.Init(rnd.Next(100, 300), rnd.Next(1000, 2000), Color.Green,
-            Color.Gray, true, true); artillery.SetPosition(rnd.Next(10, 100),
-            rnd.Next(10, 100), pictureBoxArtillery.Width, pictureBoxArtillery.Height);
+            combatVehicle = new SelfPropelledArtillery(rnd.Next(100, 300), rnd.Next(1000, 2000), Color.Green,
+            Color.Gray, true, true);
+            combatVehicle.SetPosition(rnd.Next(10, 100), rnd.Next(10, 100), pictureBoxArtillery.Width,
+            pictureBoxArtillery.Height);
             Draw();
         }
         ///<summary>
@@ -51,31 +64,24 @@ namespace WindowsFormsPropelledArtillery
         /// <param name="e"></param>
         private void buttonMove_Click(object sender, EventArgs e)
         {
-            if (artillery != null)
+            //получаем имя кнопки
+            string name = (sender as Button).Name;
+            switch (name)
             {
-                //получаем имя кнопки
-                string name = (sender as Button).Name;
-                switch (name)
-                {
-                    case "buttonUp":
-                        artillery.MoveTransport(Direction.Up);
-                        break;
-                    case "buttonDown":
-                        artillery.MoveTransport(Direction.Down);
-                        break;
-                    case "buttonLeft":
-                        artillery.MoveTransport(Direction.Left);
-                        break;
-                    case "buttonRight":
-                        artillery.MoveTransport(Direction.Right);
-                        break;
-                }
-                Draw();
+                case "buttonUp":
+                    combatVehicle.MoveTransport(Direction.Up);
+                    break;
+                case "buttonDown":
+                    combatVehicle.MoveTransport(Direction.Down);
+                    break;
+                case "buttonLeft":
+                    combatVehicle.MoveTransport(Direction.Left);
+                    break;
+                case "buttonRight":
+                    combatVehicle.MoveTransport(Direction.Right);
+                    break;
             }
-            else
-            {
-                MessageBox.Show("Нажмите кнопку Создать");
-            }
+            Draw();
         }
     }
 }
