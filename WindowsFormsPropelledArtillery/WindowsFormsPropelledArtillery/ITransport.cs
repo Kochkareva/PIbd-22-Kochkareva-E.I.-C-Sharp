@@ -7,7 +7,7 @@ using System.Drawing;
 
 namespace WindowsFormsPropelledArtillery
 {
-    interface ITransport
+    public interface ITransport
     {
         /// <summary>
         /// Установка позиции 
