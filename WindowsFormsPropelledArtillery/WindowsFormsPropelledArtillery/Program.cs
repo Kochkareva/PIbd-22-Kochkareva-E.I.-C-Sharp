@@ -16,7 +16,7 @@ namespace WindowsFormsPropelledArtillery
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new FormArtillery());
+            Application.Run(new FormBase());
         }
     }
 }
