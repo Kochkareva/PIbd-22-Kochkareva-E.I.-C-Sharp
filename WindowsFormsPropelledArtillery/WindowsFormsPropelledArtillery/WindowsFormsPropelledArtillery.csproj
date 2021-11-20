@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Base.cs" />
+    <Compile Include="BaseCollection.cs" />
     <Compile Include="CombatVehicle.cs" />
     <Compile Include="Direction.cs" />
     <Compile Include="FormArtillery.cs">
