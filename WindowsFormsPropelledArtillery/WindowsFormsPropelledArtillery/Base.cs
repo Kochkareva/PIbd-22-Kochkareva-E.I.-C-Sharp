@@ -14,9 +14,15 @@ namespace WindowsFormsPropelledArtillery
     public class Base<T> where T : class, ITransport
     {
         /// <summary>
-        /// Массив объектов, которые храним
+        /// Список объектов, которые храним
         /// </summary>
-        private readonly T[] _places;
+        private readonly List<T> _places;
+
+        /// <summary>
+        /// Максимальное количество мест на базе
+        /// </summary>
+        private readonly int _maxCount;
+
         /// <summary>
         /// Ширина окна отрисовки
         /// </summary>
@@ -43,9 +49,10 @@ namespace WindowsFormsPropelledArtillery
         {
             int width = picWidth / _placeSizeWidth;
             int height = picHeight / _placeSizeHeight;
-            _places = new T[width * height];
+            _maxCount = width * height;
             pictureWidth = picWidth;
             pictureHeight = picHeight;
+            _places = new List<T>();
         }
         /// <summary>
         /// Перегрузка оператора сложения
@@ -54,17 +61,17 @@ namespace WindowsFormsPropelledArtillery
         /// <param name="p">База</param>
         /// <param name="combatVehicle">Добавляемая техника</param>
         /// <returns></returns>
-        public static int operator +(Base<T> p, T combatVehicle)
+        public static bool operator +(Base<T> p, T combatVehicle)
         {
-            for (int i = 0; i < p._places.Length; i++)
+            if (p._places.Count < p._maxCount)
             {
-                if (p._places[i] == null)
-                {
-                    p._places[i] = combatVehicle;
-                    return i;
-                }
+                p._places.Add(combatVehicle);
+                return true;
             }
-            return -1;
+            else
+            {
+                return false;
+            }
         }
         /// <summary>
         /// Перегрузка оператора вычитания
@@ -75,13 +82,16 @@ namespace WindowsFormsPropelledArtillery
         /// <returns></returns>
         public static T operator -(Base<T> p, int index)
         {
-            if (index <= p._places.Length)
+            if(index<p._maxCount && index >= 0)
             {
-                T result = p._places[index];
-                p._places[index] = null;
-                return result;
+                T combatVehicle = p._places[index];
+                p._places.RemoveAt(index);
+                return combatVehicle;
             }
-            return null;
+            else
+            {
+                return null;
+            }
         }
 
         /// <summary>
@@ -91,7 +101,7 @@ namespace WindowsFormsPropelledArtillery
         public void Draw(Graphics g)
         {
             DrawMarking(g);
-            for (int i = 0; i < _places.Length; i++)
+            for (int i = 0; i < _places.Count; i++)
             {
                 _places[i]?.SetPosition(i % (pictureWidth / _placeSizeWidth) * _placeSizeWidth + 5,
                    i / (pictureHeight / _placeSizeHeight) * _placeSizeHeight + 10, pictureWidth, pictureHeight);
