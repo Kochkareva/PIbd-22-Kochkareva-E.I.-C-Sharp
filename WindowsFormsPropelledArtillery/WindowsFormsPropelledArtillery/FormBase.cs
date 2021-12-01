@@ -85,69 +85,45 @@ namespace WindowsFormsPropelledArtillery
         {
             if (listBoxBase.SelectedIndex > -1)
             {
-                if (MessageBox.Show($"Удалить парковку{ listBoxBase.SelectedItem.ToString()}?", "Удаление", MessageBoxButtons.YesNo,
+                if (MessageBox.Show($"Удалить парковку { listBoxBase.SelectedItem.ToString()}?", "Удаление", MessageBoxButtons.YesNo,
             MessageBoxIcon.Question) == DialogResult.Yes)
                 {
-                    baseCollection.DelBase(textBoxNewLevelName.Text);
+                    baseCollection.DelBase(listBoxBase.SelectedItem.ToString());
                     ReloadLevels();
                 }
             }
         }
+
         /// <summary>
-        /// Обработка нажатия кнопки "Поставить бронерованную машину"
+        /// Обработка нажатия кнопки "Добавить технику"
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void buttonSetCombatVehicle_Click(object sender, EventArgs e)
+        private void ButtonSetCombatVehicle_Click(object sender, EventArgs e)
         {
             if (listBoxBase.SelectedIndex > -1)
             {
-                ColorDialog dialog = new ColorDialog();
-                if (dialog.ShowDialog() == DialogResult.OK)
-                {
-                    var combatVehicle = new CombatVehicle(100, 1000, dialog.Color);
-                    if (baseCollection[listBoxBase.SelectedItem.ToString()] + combatVehicle)
-                    {
-                        Draw();
-                    }
-                    else
-                    {
-
-                        MessageBox.Show("База переполнена");
-                    }
-                }
+                var formCombatVehicle = new FormCombatVehicleConfig();
+                formCombatVehicle.AddEvent(AddCombatVehicle);
+                formCombatVehicle.Show();
             }
         }
 
         /// <summary>
-        /// Обработка нажатия кнопки "Поставить самоходную артиллерийскую установку"
+        /// Метод добавления техники
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void buttonSetSelfPropelledArtillery_Click(object sender, EventArgs e)
+        private void AddCombatVehicle(Vehicle combatVehicle)
         {
-            if (listBoxBase.SelectedIndex > -1)
+            if (combatVehicle != null && listBoxBase.SelectedIndex > -1)
             {
-                ColorDialog dialog = new ColorDialog();
-                if (dialog.ShowDialog() == DialogResult.OK)
+                if ((baseCollection[listBoxBase.SelectedItem.ToString()]) + combatVehicle)
                 {
-                    ColorDialog dialogDop = new ColorDialog();
-                    if (dialogDop.ShowDialog() == DialogResult.OK)
-                    {
-                        var combatVehicle = new SelfPropelledArtillery(100, 1000, dialog.Color, dialogDop.Color, true, true);
-                        if (baseCollection[listBoxBase.SelectedItem.ToString()] + combatVehicle)
-                        {
-                            Draw();
-                        }
-                        else
-                        {
-                            MessageBox.Show("База переполнена");
-                        }
-                    }
+                    Draw();
+                }
+                else
+                {
+                    MessageBox.Show("не удалось поставить");
                 }
             }
         }
-
         /// <summary>
         /// Обработка нажатия кнопки "Забрать"
         /// </summary>

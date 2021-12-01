@@ -61,6 +61,11 @@ namespace WindowsFormsPropelledArtillery
             }
             base.DrawTransport(g);
         }
+
+        public void SetDopColor(Color color)
+        {
+            DopColor = color;
+        }
     }
 }
 
