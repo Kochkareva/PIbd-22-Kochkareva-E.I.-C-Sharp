@@ -53,7 +53,6 @@ namespace WindowsFormsPropelledArtillery
             {
                 baseStages.Add(name, new Base<Vehicle>(pictureWidth, pictureHeight));
             }
-
         }
         /// <summary>
         /// Удаление базы
@@ -88,7 +87,7 @@ namespace WindowsFormsPropelledArtillery
         /// </summary>
         /// <param name="filename">Путь и имя файла</param>
         /// <returns></returns>
-        public bool SaveData(string filename)
+        public void SaveData(string filename)
         {
             if (File.Exists(filename))
             {
@@ -121,7 +120,6 @@ namespace WindowsFormsPropelledArtillery
                     }
                 }
             }
-            return true;
         }
 
         /// <summary>
@@ -129,11 +127,11 @@ namespace WindowsFormsPropelledArtillery
         /// </summary>
         /// <param name="filename"></param>
         /// <returns></returns>
-        public bool LoadData(string filename)
+        public void LoadData(string filename)
         {
             if (!File.Exists(filename))
             {
-                return false;
+                throw new FileNotFoundException("Фаил не найден");
             }
             using (StreamReader sr = new StreamReader(filename))
             {
@@ -146,7 +144,7 @@ namespace WindowsFormsPropelledArtillery
                 else
                 {
                     //если нет такой записи, то это не те данные
-                    return false;
+                    throw new FileFormatException("Неверный формат файла");
                 }
                 Vehicle artillery = null;
                 string key = string.Empty;
@@ -172,13 +170,11 @@ namespace WindowsFormsPropelledArtillery
                     {
                         artillery = new SelfPropelledArtillery(strs.Split(separator)[1]);
                     }
-                    var result = baseStages[key] + artillery;
-                    if (!result)
+                    if(!(baseStages[key] + artillery))
                     {
-                        return false;
+                        throw new TypeLoadException("Не удалось загрузить военную технику на базу");
                     }
                 }
-                return true;
             }
         }
     }
