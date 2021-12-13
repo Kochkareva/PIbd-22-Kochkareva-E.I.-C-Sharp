@@ -80,7 +80,7 @@ namespace WindowsFormsPropelledArtillery
                 MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            logger.Info($"Добавили парковку {textBoxNewLevelName.Text}");
+            logger.Info($"Добавили базу {textBoxNewLevelName.Text}");
             baseCollection.AddBase(textBoxNewLevelName.Text);
             ReloadLevels();
         }
@@ -93,10 +93,10 @@ namespace WindowsFormsPropelledArtillery
         {
             if (listBoxBase.SelectedIndex > -1)
             {
-                if (MessageBox.Show($"Удалить парковку { listBoxBase.SelectedItem.ToString()}?", "Удаление", MessageBoxButtons.YesNo,
+                if (MessageBox.Show($"Удалить базу { listBoxBase.SelectedItem.ToString()}?", "Удаление", MessageBoxButtons.YesNo,
             MessageBoxIcon.Question) == DialogResult.Yes)
                 {
-                    logger.Info($"Удалили парковку { listBoxBase.SelectedItem.ToString()}");
+                    logger.Info($"Удалили базу { listBoxBase.SelectedItem.ToString()}");
                     baseCollection.DelBase(listBoxBase.SelectedItem.ToString());
                     ReloadLevels();
                 }
