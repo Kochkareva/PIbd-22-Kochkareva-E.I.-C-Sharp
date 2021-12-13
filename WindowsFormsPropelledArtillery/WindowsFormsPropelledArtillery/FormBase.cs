@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
+using NLog;
 
 namespace WindowsFormsPropelledArtillery
 {
@@ -18,11 +19,16 @@ namespace WindowsFormsPropelledArtillery
         /// </summary>
         private readonly BaseCollection baseCollection;
 
+        /// <summary>
+        /// Логгер
+        /// </summary>
+        private readonly Logger logger;
+
         public FormBase()
         {
             InitializeComponent();
             baseCollection = new BaseCollection(pictureBoxBase.Width, pictureBoxBase.Height);
-            Draw();
+            logger = LogManager.GetCurrentClassLogger();
         }
         /// <summary>
         /// Заполнение listBoxLevels
@@ -74,6 +80,7 @@ namespace WindowsFormsPropelledArtillery
                 MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
+            logger.Info($"Добавили парковку {textBoxNewLevelName.Text}");
             baseCollection.AddBase(textBoxNewLevelName.Text);
             ReloadLevels();
         }
@@ -89,6 +96,7 @@ namespace WindowsFormsPropelledArtillery
                 if (MessageBox.Show($"Удалить парковку { listBoxBase.SelectedItem.ToString()}?", "Удаление", MessageBoxButtons.YesNo,
             MessageBoxIcon.Question) == DialogResult.Yes)
                 {
+                    logger.Info($"Удалили парковку { listBoxBase.SelectedItem.ToString()}");
                     baseCollection.DelBase(listBoxBase.SelectedItem.ToString());
                     ReloadLevels();
                 }
@@ -100,12 +108,9 @@ namespace WindowsFormsPropelledArtillery
         /// </summary>
         private void ButtonSetCombatVehicle_Click(object sender, EventArgs e)
         {
-            if (listBoxBase.SelectedIndex > -1)
-            {
-                var formCombatVehicle = new FormCombatVehicleConfig();
-                formCombatVehicle.AddEvent(AddCombatVehicle);
-                formCombatVehicle.Show();
-            }
+            var formCombatVehicle = new FormCombatVehicleConfig();
+            formCombatVehicle.AddEvent(AddCombatVehicle);
+            formCombatVehicle.Show();
         }
 
         /// <summary>
@@ -115,13 +120,28 @@ namespace WindowsFormsPropelledArtillery
         {
             if (combatVehicle != null && listBoxBase.SelectedIndex > -1)
             {
-                if ((baseCollection[listBoxBase.SelectedItem.ToString()]) + combatVehicle)
+                try
                 {
+                    if ((baseCollection[listBoxBase.SelectedItem.ToString()]) + combatVehicle)
+                    {
+                        Draw();
+                        logger.Info($"Добавлена военная техника {combatVehicle}");
+                    }
+                    else
+                    {
+                        MessageBox.Show("не удалось поставить");
+                    }
                     Draw();
                 }
-                else
+                catch (BaseOverflowException ex)
                 {
-                    MessageBox.Show("не удалось поставить");
+                    MessageBox.Show(ex.Message, "Переполнение", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    logger.Warn("Переполнение при попытке добавить военную технику на базу");
+                }
+                catch(Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Неизвестная ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    logger.Warn("Неизвестная ошибка при попытке добавить военную технику на базу");
                 }
             }
         }
@@ -134,14 +154,28 @@ namespace WindowsFormsPropelledArtillery
         {
             if (listBoxBase.SelectedIndex > -1 && maskedTextBox.Text != "")
             {
-                var combatVehicke = baseCollection[listBoxBase.SelectedItem.ToString()] - Convert.ToInt32(maskedTextBox.Text);
-                if (combatVehicke != null)
+                try
                 {
-                    FormArtillery form = new FormArtillery();
-                    form.SetCombatVehicle(combatVehicke);
-                    form.ShowDialog();
+                    var combatVehicke = baseCollection[listBoxBase.SelectedItem.ToString()] - Convert.ToInt32(maskedTextBox.Text);
+                    if (combatVehicke != null)
+                    {
+                        FormArtillery form = new FormArtillery();
+                        form.SetCombatVehicle(combatVehicke);
+                        form.ShowDialog();
+                        logger.Info($"Изъята военная техника {combatVehicke} с места { maskedTextBox.Text}");
+                        Draw();
+                    }
                 }
-                Draw();
+                catch (BaseNotFoundException ex)
+                {
+                    MessageBox.Show(ex.Message, "Не найдено", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    logger.Warn("Не найдено место, с которого забирается военная техника");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Неизвестная ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    logger.Warn("Неизвестная ошибка при попытке изъятия военной техники с базы");
+                }
             }
         }
 
@@ -152,6 +186,7 @@ namespace WindowsFormsPropelledArtillery
         /// <param name="e"></param>
         private void listBoxBase_SelectedIndexChanged(object sender, EventArgs e)
         {
+            logger.Info($"Перешли на базу { listBoxBase.SelectedItem.ToString()}");
             Draw();
         }
         /// <summary>
@@ -163,15 +198,16 @@ namespace WindowsFormsPropelledArtillery
         {
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
-                if (baseCollection.SaveData(saveFileDialog.FileName))
+                try
                 {
-                    MessageBox.Show("Сохранение прошло успешно", "Результат",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    baseCollection.SaveData(saveFileDialog.FileName);
+                    MessageBox.Show("Сохранение прошло успешно", "Результат", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    logger.Info("Сохранено в файл " + saveFileDialog.FileName);
                 }
-                else
+                catch(Exception ex)
                 {
-                    MessageBox.Show("Не сохранилось", "Результат",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(ex.Message, "Неизвестная ошибка при сохранении", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    logger.Warn("Неизвестная ошибка при сохранении файла");
                 }
             }
         }
@@ -184,18 +220,35 @@ namespace WindowsFormsPropelledArtillery
         {
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
-                if (baseCollection.LoadData(openFileDialog.FileName))
+                try
                 {
+                    baseCollection.LoadData(openFileDialog.FileName);
                     MessageBox.Show("Загрузили", "Результат", MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
+MessageBoxIcon.Information);
+                    logger.Info("Загружено из файла " + openFileDialog.FileName);
                     ReloadLevels();
                     Draw();
-
                 }
-                else
+                catch (FileNotFoundException ex)
                 {
-                    MessageBox.Show("Не загрузили", "Результат", MessageBoxButtons.OK,
+                    MessageBox.Show(ex.Message, "Файл не найден", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    logger.Warn("Файл не найден");
+                }
+                catch (FileFormatException ex)
+                {
+                    MessageBox.Show(ex.Message, "Неверный формат файла", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    logger.Warn("Неверный формат файла");
+                }       
+                catch(TypeLoadException ex)
+                {
+                    MessageBox.Show(ex.Message, "Неверный тип загружаемого объекта", MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
+                    logger.Warn("Неверный тип загружаемого объекта");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Неизвестная ошибка при загрузке", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    logger.Warn("Неизвестная ошибка при загрузке");
                 }
             }
         }

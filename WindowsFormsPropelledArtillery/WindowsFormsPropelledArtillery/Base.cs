@@ -70,7 +70,7 @@ namespace WindowsFormsPropelledArtillery
             }
             else
             {
-                return false;
+                throw new BaseOverflowException();
             }
         }
         /// <summary>
@@ -90,7 +90,7 @@ namespace WindowsFormsPropelledArtillery
             }
             else
             {
-                return null;
+                throw new BaseNotFoundException(index);
             }
         }
 

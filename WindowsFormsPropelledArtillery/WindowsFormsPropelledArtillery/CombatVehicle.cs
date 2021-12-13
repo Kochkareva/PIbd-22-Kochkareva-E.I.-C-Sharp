@@ -12,12 +12,12 @@ namespace WindowsFormsPropelledArtillery
         /// <summary>
         /// Ширина отрисовки боевой машины
         /// </summary>
-        protected readonly int combatVehicleWidth = 90;
+        protected readonly int combatVehicleWidth = 100;
 
         /// <summary>
         /// Высота отрисовки боевой машины
         /// </summary>
-        protected readonly int combatVehicleHeight = 50;
+        protected readonly int combatVehicleHeight = 60;
 
         /// <summary>
         /// Разделитель для записи информации по объекту в файл
