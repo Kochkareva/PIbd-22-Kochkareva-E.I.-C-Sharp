@@ -10,8 +10,8 @@ namespace WindowsFormsPropelledArtillery
     /// <summary>
     /// Класс отрисовки самоходной артиллерийской установки 
     /// </summary>
-    public class SelfPropelledArtillery : CombatVehicle 
-    {        
+    public class SelfPropelledArtillery : CombatVehicle, IEquatable<SelfPropelledArtillery>
+    {
         /// <summary>
         /// Дополнительный цвет
         /// </summary>
@@ -87,6 +87,69 @@ namespace WindowsFormsPropelledArtillery
         {
             return
             $"{base.ToString()}{separator}{DopColor.Name}{separator}{Ammunition}{separator}{Gun}";
+        }
+
+        /// <summary>
+        /// Метод интерфейса IEquatable для класса SelfPropelledArtillery
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
+        public bool Equals(SelfPropelledArtillery other)
+        {
+            // Реализовать метод сравнения для дочернего класса
+            if (other == null)
+            {
+                return false;
+            }
+            if (GetType().Name != other.GetType().Name)
+            {
+                return false;
+            }
+            if (MaxSpeed != other.MaxSpeed)
+            {
+                return false;
+            }
+            if (Weight != other.Weight)
+            {
+                return false;
+            }
+            if (MainColor != other.MainColor)
+            {
+                return false;
+            }
+            if (DopColor != other.DopColor)
+            {
+                return false;
+            }
+            if (Ammunition != other.Ammunition)
+            {
+                return false;
+            }
+            if (Gun != other.Gun)
+            {
+                return false;
+            }
+            return true;
+        }
+        /// <summary>
+        /// Перегрузка метода от object
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public override bool Equals(Object obj)
+        {
+            if (obj == null)
+            {
+                return false;
+            }
+            if (!(obj is SelfPropelledArtillery artilleryObj))
+            {
+                return false;
+            }
+            else
+            {
+                return Equals(artilleryObj);
+            }
         }
     }
 }

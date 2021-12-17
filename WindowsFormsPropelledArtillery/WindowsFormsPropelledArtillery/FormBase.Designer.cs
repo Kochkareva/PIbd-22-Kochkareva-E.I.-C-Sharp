@@ -46,6 +46,7 @@ namespace WindowsFormsPropelledArtillery
             this.загрузитьToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
+            this.buttonSort = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxBase)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -66,7 +67,7 @@ namespace WindowsFormsPropelledArtillery
             this.groupBox1.Controls.Add(this.buttonTakeCombatVehicle);
             this.groupBox1.Controls.Add(this.maskedTextBox);
             this.groupBox1.Controls.Add(this.label1);
-            this.groupBox1.Location = new System.Drawing.Point(818, 272);
+            this.groupBox1.Location = new System.Drawing.Point(818, 348);
             this.groupBox1.Margin = new System.Windows.Forms.Padding(2);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Padding = new System.Windows.Forms.Padding(2);
@@ -157,7 +158,7 @@ namespace WindowsFormsPropelledArtillery
             // 
             // ButtonSetCombatVehicle
             // 
-            this.ButtonSetCombatVehicle.Location = new System.Drawing.Point(820, 208);
+            this.ButtonSetCombatVehicle.Location = new System.Drawing.Point(822, 299);
             this.ButtonSetCombatVehicle.Name = "ButtonSetCombatVehicle";
             this.ButtonSetCombatVehicle.Size = new System.Drawing.Size(98, 44);
             this.ButtonSetCombatVehicle.TabIndex = 9;
@@ -188,14 +189,14 @@ namespace WindowsFormsPropelledArtillery
             // сохранитьToolStripMenuItem
             // 
             this.сохранитьToolStripMenuItem.Name = "сохранитьToolStripMenuItem";
-            this.сохранитьToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.сохранитьToolStripMenuItem.Size = new System.Drawing.Size(166, 26);
             this.сохранитьToolStripMenuItem.Text = "Сохранить";
             this.сохранитьToolStripMenuItem.Click += new System.EventHandler(this.сохранитьToolStripMenuItem_Click);
             // 
             // загрузитьToolStripMenuItem
             // 
             this.загрузитьToolStripMenuItem.Name = "загрузитьToolStripMenuItem";
-            this.загрузитьToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.загрузитьToolStripMenuItem.Size = new System.Drawing.Size(166, 26);
             this.загрузитьToolStripMenuItem.Text = "Загрузить";
             this.загрузитьToolStripMenuItem.Click += new System.EventHandler(this.загрузитьToolStripMenuItem_Click);
             // 
@@ -208,11 +209,22 @@ namespace WindowsFormsPropelledArtillery
             this.openFileDialog.FileName = "openFileDialog1";
             this.openFileDialog.Filter = "txt file| *.txt";
             // 
+            // buttonSort
+            // 
+            this.buttonSort.Location = new System.Drawing.Point(822, 254);
+            this.buttonSort.Name = "buttonSort";
+            this.buttonSort.Size = new System.Drawing.Size(98, 39);
+            this.buttonSort.TabIndex = 11;
+            this.buttonSort.Text = "Сортировать";
+            this.buttonSort.UseVisualStyleBackColor = true;
+            this.buttonSort.Click += new System.EventHandler(this.buttonSort_Click);
+            // 
             // FormBase
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(932, 517);
+            this.Controls.Add(this.buttonSort);
             this.Controls.Add(this.ButtonSetCombatVehicle);
             this.Controls.Add(this.buttonDeleteBase);
             this.Controls.Add(this.listBoxBase);
@@ -255,5 +267,6 @@ namespace WindowsFormsPropelledArtillery
         private System.Windows.Forms.ToolStripMenuItem загрузитьToolStripMenuItem;
         private System.Windows.Forms.SaveFileDialog saveFileDialog;
         private System.Windows.Forms.OpenFileDialog openFileDialog;
+        private System.Windows.Forms.Button buttonSort;
     }
 }

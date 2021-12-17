@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,18 +12,17 @@ namespace WindowsFormsPropelledArtillery
     /// Параметризованный класс для хранения набора объектов от интерфейса ITransport
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class Base<T> where T : class, ITransport
+    public class Base<T> : IEnumerator<T>, IEnumerable<T>
+        where T : class, ITransport
     {
         /// <summary>
         /// Список объектов, которые храним
         /// </summary>
         private readonly List<T> _places;
-
         /// <summary>
         /// Максимальное количество мест на базе
         /// </summary>
         private readonly int _maxCount;
-
         /// <summary>
         /// Ширина окна отрисовки
         /// </summary>
@@ -39,6 +39,14 @@ namespace WindowsFormsPropelledArtillery
         /// Размер места на базе (высота)
         /// </summary>
         private readonly int _placeSizeHeight = 80;
+        /// <summary>
+        /// Текущий элемент для вывода через IEnumerator (будет обращаться по своему индексу к ключу словаря, по которму будет возвращаться запись)
+        /// </summary>
+        private int _currentIndex;
+
+        public T Current => _places[_currentIndex];
+
+        object IEnumerator.Current => _places[_currentIndex];
 
         /// <summary>
         /// Конструктор
@@ -63,6 +71,10 @@ namespace WindowsFormsPropelledArtillery
         /// <returns></returns>
         public static bool operator +(Base<T> p, T combatVehicle)
         {
+            if (p._places.Contains(combatVehicle))
+            {
+                throw new BaseAlreadyHaveException();
+            }
             if (p._places.Count < p._maxCount)
             {
                 p._places.Add(combatVehicle);
@@ -82,7 +94,7 @@ namespace WindowsFormsPropelledArtillery
         /// <returns></returns>
         public static T operator -(Base<T> p, int index)
         {
-            if(index<p._maxCount && index >= 0)
+            if (index < p._maxCount && index >= 0)
             {
                 T combatVehicle = p._places[index];
                 p._places.RemoveAt(index);
@@ -140,6 +152,48 @@ namespace WindowsFormsPropelledArtillery
                 return null;
             }
             return _places[index];
+        }
+
+        /// <summary>
+        /// Сортировка военной техники на базе
+        /// </summary>
+        public void Sort() => _places.Sort((IComparer<T>)new ArtilleryComparer());
+
+        /// <summary>
+        /// Метод интерфейса IEnumerator, вызываемый при удалении объекта
+        /// </summary>
+        public void Dispose()
+        {
+        }
+        /// <summary>
+        /// Метод интерфейса IEnumerator для перехода к следующему элементу или началу коллекции
+        /// </summary>
+        /// <returns></returns>
+        public bool MoveNext()
+        {
+            _currentIndex++;
+            return (_currentIndex < _places.Count);
+        }
+        /// <summary>
+        /// Метод интерфейса IEnumerator для сброса и возврата к началу коллекции
+        /// </summary>
+        public void Reset()
+        {
+            _currentIndex = -1;
+        }
+        /// <summary>
+        /// Метод интерфейса IEnumerable
+        /// </summary>
+        public IEnumerator<T> GetEnumerator()
+        {
+            return this;
+        }
+        /// <summary>
+        /// Метод интерфейса IEnumerable
+        /// </summary>
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return this;
         }
     }
 }
