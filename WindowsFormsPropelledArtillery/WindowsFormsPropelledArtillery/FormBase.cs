@@ -138,7 +138,12 @@ namespace WindowsFormsPropelledArtillery
                     MessageBox.Show(ex.Message, "Переполнение", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     logger.Warn("Переполнение при попытке добавить военную технику на базу");
                 }
-                catch(Exception ex)
+                catch (BaseAlreadyHaveException ex)
+                {
+                    MessageBox.Show(ex.Message, "Дублирование", MessageBoxButtons.OK,
+MessageBoxIcon.Error);
+                }
+                catch (Exception ex)
                 {
                     MessageBox.Show(ex.Message, "Неизвестная ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     logger.Warn("Неизвестная ошибка при попытке добавить военную технику на базу");
@@ -250,6 +255,21 @@ MessageBoxIcon.Information);
                     MessageBox.Show(ex.Message, "Неизвестная ошибка при загрузке", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     logger.Warn("Неизвестная ошибка при загрузке");
                 }
+            }
+        }
+
+        /// <summary>
+        /// Обработка нажатия кнопки "Сортировка"
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void buttonSort_Click(object sender, EventArgs e)
+        {
+            if (listBoxBase.SelectedIndex > -1)
+            {
+                baseCollection[listBoxBase.SelectedItem.ToString()].Sort();
+                Draw();
+                logger.Info("Сортировка уровней");
             }
         }
     }

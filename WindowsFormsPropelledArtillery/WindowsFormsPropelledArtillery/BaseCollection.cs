@@ -10,7 +10,7 @@ namespace WindowsFormsPropelledArtillery
     /// <summary>
     /// Класс-коллекция баз
     /// </summary>
-    public class BaseCollection
+    public class BaseCollection 
     {
         /// <summary>
         /// Словарь (хранилище) с базами
@@ -99,24 +99,19 @@ namespace WindowsFormsPropelledArtillery
                 foreach (var level in baseStages)
                 {
                     sw.Write($"Base{separator}{level.Key}{Environment.NewLine}");
-                    ITransport artillery = null;
-                    for (int i = 0; (artillery = level.Value.GetNext(i)) != null; i++)
+                    foreach (ITransport artillery in level.Value)
                     {
-                        if (artillery != null)
+                        //Записываем тип военной машины
+                        if (artillery.GetType().Name == "CombatVehicle")
                         {
-                            //если место не пустое
-                            //Записываем тип машины
-                            if (artillery.GetType().Name == "CombatVehicle")
-                            {
-                                sw.Write($"CombatVehicle{separator}");
-                            }
-                            if (artillery.GetType().Name == "SelfPropelledArtillery")
-                            {
-                                sw.Write($"SelfPropelledArtillery{separator}");
-                            }
-                            //Записываемые параметры
-                            sw.Write(artillery + Environment.NewLine);
+                            sw.Write($"CombatVehicle{separator}");
                         }
+                        if (artillery.GetType().Name == "SelfPropelledArtillery")
+                        {
+                            sw.Write($"SelfPropelledArtillery{separator}");
+                        }
+                        //Записываемые параметры
+                        sw.Write(artillery + Environment.NewLine);
                     }
                 }
             }
@@ -177,5 +172,7 @@ namespace WindowsFormsPropelledArtillery
                 }
             }
         }
+
+       
     }
 }

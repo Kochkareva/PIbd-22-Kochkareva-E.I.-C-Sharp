@@ -7,7 +7,7 @@ using System.Drawing;
 
 namespace WindowsFormsPropelledArtillery
 {
-    public class CombatVehicle : Vehicle
+    public class CombatVehicle : Vehicle, IEquatable<CombatVehicle>
     {
         /// <summary>
         /// Ширина отрисовки боевой машины
@@ -127,6 +127,56 @@ namespace WindowsFormsPropelledArtillery
         public override string ToString()
         {
             return $"{MaxSpeed}{separator}{Weight}{separator}{MainColor.Name}";
+        }
+
+        /// <summary>
+        /// Метод интерфейса IEquatable для класса CombatVehicle
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
+        public bool Equals(CombatVehicle other)
+        {
+            if (other == null)
+            {
+                return false;
+            }
+            if (GetType().Name != other.GetType().Name)
+            {
+                return false;
+            }
+            if (MaxSpeed != other.MaxSpeed)
+            {
+                return false;
+            }
+            if (Weight != other.Weight)
+            {
+                return false;
+            }
+            if (MainColor != other.MainColor)
+            {
+                return false;
+            }
+            return true;
+        }
+        /// <summary>
+        /// Перегрузка метода от object
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public override bool Equals(Object obj)
+        {
+            if (obj == null)
+            {
+                return false;
+            }
+            if (!(obj is CombatVehicle artilleryObj))
+            {
+                return false;
+            }
+            else
+            {
+                return Equals(artilleryObj);
+            }
         }
     }
 }
